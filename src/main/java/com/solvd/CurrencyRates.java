@@ -8,7 +8,7 @@ public class CurrencyRates {
 
     public void setRate(String fromCurrency, String toCurrency,  BigDecimal rate) {
         String key = pairKey(fromCurrency, toCurrency);
-        if(rate == null) throw new NullPointerException("Rate is null");
+        if(rate == null) throw new IllegalArgumentException("Rate is null");
         if(rate.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Rate is negative or zero");
         rates.put(key, rate);
     }
@@ -43,10 +43,10 @@ public class CurrencyRates {
     }
 
     private String pairKey(String fromCurrency, String toCurrency) {
-        if(fromCurrency== null || toCurrency == null) throw new NullPointerException("Currency cannot be null");
+        if(fromCurrency== null || toCurrency == null) throw new IllegalArgumentException("Currency cannot be null");
         String from = fromCurrency.trim().toUpperCase();
         String to = toCurrency.trim().toUpperCase();
-        if(from.isEmpty() || to.isEmpty()) throw new NullPointerException("Currency cannot be blank");
+        if(from.isEmpty() || to.isEmpty()) throw new IllegalArgumentException("Currency cannot be blank");
         return from + "->" + to;
     }
 }

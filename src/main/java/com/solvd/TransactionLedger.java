@@ -81,7 +81,7 @@ public class TransactionLedger {
 
     public Transaction getLastTransaction(){
         return transactions.stream()
-                .max(Comparator.comparing(Transaction::getAmount))
+                .max(Comparator.comparing(Transaction::getTimestamp))
                 .orElseThrow(() -> new IllegalStateException("Ledger is empty"));
     }
 

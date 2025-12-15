@@ -8,16 +8,25 @@ public class LoanCalculator {
     private static final MathContext MC = MathContext.DECIMAL128;
 
     private final BigDecimal principal;
-    private final BigDecimal annualRatePercet;
+    private final BigDecimal annualRatePercent;
     private final int termMonths;
 
-    public LoanCalculator(BigDecimal principal, BigDecimal annualRatePercet, int termMonths) {
-        if(principal == null || annualRatePercet == null) throw new IllegalArgumentException("principal and annualRatePercet can't be null");
-        if(principal.compareTo(BigDecimal.ZERO)<=0)  throw new IllegalArgumentException("principal can't be negative");
-        if(annualRatePercet.compareTo(BigDecimal.ZERO)<=0) throw new IllegalArgumentException("annualRatePercet can't be negative");
-        if(termMonths < 0) throw new IllegalArgumentException("termMonths can't be negative");
+    public LoanCalculator(BigDecimal principal, BigDecimal annualRatePercent, int termMonths) {
+        if (principal == null || annualRatePercent == null) {
+            throw new IllegalArgumentException("principal and annualRatePercent can't be null");
+        }
+        if (principal.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("principal must be > 0");
+        }
+        if (annualRatePercent.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("annualRatePercent can't be negative");
+        }
+        if (termMonths <= 0) {
+            throw new IllegalArgumentException("termMonths must be > 0");
+        }
+
         this.principal = principal;
-        this.annualRatePercet = annualRatePercet;
+        this.annualRatePercent = annualRatePercent;
         this.termMonths = termMonths;
     }
 
@@ -25,22 +34,24 @@ public class LoanCalculator {
         return principal;
     }
 
-    public BigDecimal getAnnualRatePercet() {
-        return annualRatePercet;
+    public BigDecimal getAnnualRatePercent() {
+        return annualRatePercent;
     }
 
     public int getTermMonths() {
         return termMonths;
     }
 
-    public BigDecimal monthlRate(){
-        return annualRatePercet.divide(new BigDecimal("100"), MC)
+    public BigDecimal monthlyRate() {
+        return annualRatePercent.divide(new BigDecimal("100"), MC)
                 .divide(new BigDecimal("12"), MC);
     }
 
-    public BigDecimal monthlyPayment(int scale){
-        BigDecimal r  = monthlRate();
-        if(r.compareTo(BigDecimal.ZERO)<=0){
+    public BigDecimal monthlyPayment(int scale) {
+        if (scale < 0) throw new IllegalArgumentException("scale can't be negative");
+
+        BigDecimal r = monthlyRate();
+        if (r.compareTo(BigDecimal.ZERO) == 0) {
             return principal.divide(new BigDecimal(termMonths), scale, RoundingMode.HALF_UP);
         }
 
@@ -53,44 +64,51 @@ public class LoanCalculator {
         return payment.setScale(scale, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal totalPayment(int scale){
-        return monthlyPayment(scale).multiply(new BigDecimal(termMonths), MC).setScale(scale, RoundingMode.HALF_UP);
+    public BigDecimal totalPayment(int scale) {
+        if (scale < 0) throw new IllegalArgumentException("scale can't be negative");
+        return monthlyPayment(scale)
+                .multiply(new BigDecimal(termMonths), MC)
+                .setScale(scale, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal totalInterest(int scale){
-        BigDecimal total = totalPayment(scale);
-        BigDecimal interest = total.subtract(principal, MC);
-        return interest.setScale(scale, RoundingMode.HALF_UP);
+    public BigDecimal totalInterest(int scale) {
+        if (scale < 0) throw new IllegalArgumentException("scale can't be negative");
+        return totalPayment(scale)
+                .subtract(principal, MC)
+                .setScale(scale, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal remainingBalanceAfterPayment(int monthsPaid, int scale){
-        if(monthsPaid < 0 || monthsPaid > termMonths) throw new IllegalArgumentException("monthsPaid out of range");
+    public BigDecimal remainingBalanceAfterPayment(int monthsPaid, int scale) {
+        if (scale < 0) throw new IllegalArgumentException("scale can't be negative");
+        if (monthsPaid < 0 || monthsPaid > termMonths) {
+            throw new IllegalArgumentException("monthsPaid out of range");
+        }
 
-        BigDecimal r = monthlRate();
+        BigDecimal r = monthlyRate();
         BigDecimal payment = monthlyPayment(scale);
 
-        if(r.compareTo(BigDecimal.ZERO)==0){
+        if (r.compareTo(BigDecimal.ZERO) == 0) {
             BigDecimal paid = payment.multiply(new BigDecimal(monthsPaid), MC);
             BigDecimal remaining = principal.subtract(paid, MC);
-            if(remaining.compareTo(BigDecimal.ZERO) < 0) remaining = BigDecimal.ZERO;
+            if (remaining.compareTo(BigDecimal.ZERO) < 0) remaining = BigDecimal.ZERO;
             return remaining.setScale(scale, RoundingMode.HALF_UP);
         }
 
         BigDecimal onePlusR = BigDecimal.ONE.add(r, MC);
-        BigDecimal pow = onePlusR.pow(termMonths, MC);
+        BigDecimal pow = onePlusR.pow(monthsPaid, MC);
 
         BigDecimal part1 = principal.multiply(pow, MC);
-        BigDecimal part2 = payment.multiply(pow.subtract(BigDecimal.ONE, MC).divide(r, MC));
+        BigDecimal part2 = payment.multiply(pow.subtract(BigDecimal.ONE, MC).divide(r, MC), MC);
 
         BigDecimal balance = part1.subtract(part2, MC);
-        if(balance.compareTo(BigDecimal.ZERO)<0) balance = BigDecimal.ZERO;
+        if (balance.compareTo(BigDecimal.ZERO) < 0) balance = BigDecimal.ZERO;
 
         return balance.setScale(scale, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal firstMonthInterest(int scale){
-        BigDecimal r = monthlRate();
-        BigDecimal interest = principal.multiply(r, MC);
+    public BigDecimal firstMonthInterest(int scale) {
+        if (scale < 0) throw new IllegalArgumentException("scale can't be negative");
+        BigDecimal interest = principal.multiply(monthlyRate(), MC);
         return interest.setScale(scale, RoundingMode.HALF_UP);
     }
 }

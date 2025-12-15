@@ -8,7 +8,7 @@ public class CurrencyExchangeService {
     private BigDecimal feePercent = BigDecimal.ZERO;
     private int scale = 2;
 
-    public   CurrencyExchangeService(CurrencyRates rates) {
+    public CurrencyExchangeService(CurrencyRates rates) {
         if(rates == null) throw new IllegalArgumentException("rates can't be null");
         this.rates = rates;
     }
@@ -21,9 +21,9 @@ public class CurrencyExchangeService {
         return rates.getRate(fromCurrency, toCurrency);
     }
 
-    public void SetFeePrecent(BigDecimal feePercent) {
+    public void setFeePercent(BigDecimal feePercent) {
         if(feePercent == null) throw new IllegalArgumentException("feePercent can't be null");
-        if(feePercent.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("feePercent can't be negative");
+        if(feePercent.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("feePercent can't be negative");
         this.feePercent = feePercent;
     }
 
@@ -61,7 +61,7 @@ public class CurrencyExchangeService {
         return round(converted, scale);
     }
 
-    public BigDecimal convertedWithFee(BigDecimal amount, String fromCurrency, String toCurrency) {
+    public BigDecimal convertWithFee(BigDecimal amount, String fromCurrency, String toCurrency) {
         BigDecimal base = convert(amount, fromCurrency, toCurrency);
 
         if(feePercent.compareTo(BigDecimal.ZERO) == 0) return base;
@@ -70,12 +70,6 @@ public class CurrencyExchangeService {
         BigDecimal afterFee = base.multiply(feeMultiplier);
 
         return round(afterFee, scale);
-    }
-
-    public BigDecimal convertedWithFee(BigDecimal amount, int scele) {
-        if(amount == null) throw new IllegalArgumentException("amount can't be null");
-        if(scele < 0) throw new IllegalArgumentException("scele can't be negative");
-        return  amount.setScale(scele, RoundingMode.HALF_UP);
     }
 
     public BigDecimal round(BigDecimal amount, int scale) {

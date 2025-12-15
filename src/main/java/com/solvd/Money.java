@@ -45,13 +45,13 @@ public class Money implements Comparable<Money> {
 
     private void requireSameCurrency(Money other){
         if(other == null) throw new IllegalArgumentException("Other cannot be null");
-        if(this.currency.equals(other.currency)) throw new IllegalArgumentException("Currency mismatch");
+        if(!this.currency.equals(other.currency)) throw new IllegalArgumentException("Currency mismatch");
     }
 
     @Override
     public boolean equals(Object o) {
         if(!(o instanceof Money m)) return false;
-        return currency.equals(m.currency) && amount.compareTo(m.amount);
+        return currency.equals(m.currency) && amount.compareTo(m.amount)==0;
     }
 
     @Override
