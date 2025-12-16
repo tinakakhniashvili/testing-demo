@@ -1,10 +1,12 @@
 package com.solvd.testing.tests;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 import com.solvd.Money;
+import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class MoneyTest {
 

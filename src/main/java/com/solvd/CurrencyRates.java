@@ -1,7 +1,10 @@
 package com.solvd;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class CurrencyRates {
     private final Map<String, BigDecimal> rates = new HashMap<>();

@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class LoanCalculatorTest {
 

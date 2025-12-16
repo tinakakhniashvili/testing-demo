@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SmokeSuite">
+    <listeners>
+        <listener class-name="com.solvd.testing.listeners.SummaryListener"/>
+    </listeners>
+
+    <test name="CoreTests">
+        <classes>
+            <class name="com.solvd.testing.tests.TestLifecycleHooks"/>
+            <class name="com.solvd.testing.tests.MoneyTest"/>
+            <class name="com.solvd.testing.tests.TransactionLedgerTest"/>
+        </classes>
+    </test>
+</suite>

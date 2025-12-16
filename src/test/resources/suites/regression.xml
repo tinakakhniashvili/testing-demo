@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="RegressionSuite">
+    <listeners>
+        <listener class-name="com.solvd.testing.listeners.SummaryListener"/>
+    </listeners>
+
+    <test name="RegressionTests">
+        <classes>
+            <class name="com.solvd.testing.tests.CurrencyRatesTest"/>
+            <class name="com.solvd.testing.tests.CurrencyExchangeServiceTest"/>
+            <class name="com.solvd.testing.tests.LoanCalculatorTest"/>
+            <class name="com.solvd.testing.tests.TestLifecycleHooks"/>
+        </classes>
+    </test>
+
+</suite>
