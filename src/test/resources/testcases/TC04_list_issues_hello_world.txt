@@ -1,0 +1,21 @@
+Test Case ID: TC04
+Title: List issues for repository (octocat/Hello-World)
+Endpoint: GET https://api.github.com/repos/octocat/Hello-World/issues
+Auth: Not required
+
+Preconditions:
+- GitHub API is reachable.
+
+Steps:
+1) Send GET request to https://api.github.com/repos/octocat/Hello-World/issues
+2) Observe response status and JSON body.
+
+Expected Result:
+- Status code: 200 OK
+- Content-Type contains "application/json"
+- Response body is a JSON array (may be empty)
+- If not empty, an issue object contains:
+  - id (number)
+  - title (string)
+  - state (string)
+  - html_url (string)

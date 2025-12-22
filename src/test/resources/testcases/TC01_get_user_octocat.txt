@@ -1,0 +1,19 @@
+Test Case ID: TC01
+Title: Get a user (octocat)
+Endpoint: GET https://api.github.com/users/octocat
+Auth: Not required
+
+Preconditions:
+- GitHub API is reachable.
+
+Steps:
+1) Send GET request to https://api.github.com/users/octocat
+2) Observe response status and JSON body.
+
+Expected Result:
+- Status code: 200 OK
+- Response header Content-Type contains "application/json"
+- Response body contains:
+  - login = "octocat"
+  - id (number)
+  - html_url (string)

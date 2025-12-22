@@ -1,0 +1,20 @@
+Test Case ID: TC02
+Title: Get a repository (octocat/Hello-World)
+Endpoint: GET https://api.github.com/repos/octocat/Hello-World
+Auth: Not required
+
+Preconditions:
+- GitHub API is reachable.
+
+Steps:
+1) Send GET request to https://api.github.com/repos/octocat/Hello-World
+2) Observe response status and JSON body.
+
+Expected Result:
+- Status code: 200 OK
+- Content-Type contains "application/json"
+- Response body contains:
+  - name = "Hello-World"
+  - full_name = "octocat/Hello-World"
+  - owner.login = "octocat"
+  - private = false
